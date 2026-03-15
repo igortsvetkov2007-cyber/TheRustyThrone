@@ -220,7 +220,7 @@ async def bot_start(message):
     await bot.send_message(chat_id=message.chat.id,text='Вы готовы взять ответственность за свой народ?',reply_markup=keyboard)
     cursor.execute('select units_active_number from Users where chat_id=?',(message.chat.id,))
     info_units=cursor.fetchall()
-    if info_units[0][0]<0:
+    if info_units==[]:
         cursor.execute('update Users set units_active_number=0 where chat_id=?',(message.chat.id))
         connection.commit()
 
