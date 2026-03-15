@@ -8,7 +8,7 @@ from threading import Thread
 import time
 import random
 
-BOT_TOKEN='7734630132:AAG_eBtwtJ5Z9lfmdln34zclwVKEFvCte5w'
+BOT_TOKEN='7734630132:AAGyqSg76roG5s0DUmeOEsf1S_Zld_5F350'
 #YOOKASSA_TOKEN='381764678:TEST:130585'
 
 bot=Bot(BOT_TOKEN)
