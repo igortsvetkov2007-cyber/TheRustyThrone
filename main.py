@@ -221,7 +221,7 @@ async def bot_start(message):
     cursor.execute('select units_active_number from Users where chat_id=?',(message.chat.id,))
     info_units=cursor.fetchall()
     if info_units==[]:
-        cursor.execute('update Users set units_active_number=0 where chat_id=?',(message.chat.id))
+        cursor.execute('update Users set units_active_number=0 where chat_id=?',(message.chat.id,))
         connection.commit()
 
 @dp.message(F.text=='ПЕРЕЗАПУСТИТЬ БОТА')
