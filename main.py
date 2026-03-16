@@ -601,7 +601,7 @@ async def shop(message):
     await bot.send_message(chat_id=message.chat.id,text='Добро пожаловать в магазин!',reply_markup=keyboard)
 
 @dp.message(F.text=='100🪖 за 30 руб.')
-async def buy_stars_handler(message: types.Message):
+async def buy_stars_handler(message):
     # Внимание: для звезд price.amount — это количество целых Звезд (XTR)
     # 100 звезд = 100
     price = LabeledPrice(label="Доступ к курсу", amount=100) 
