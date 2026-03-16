@@ -600,47 +600,41 @@ async def shop(message):
     keyboard=builder_shop.as_markup(resize_keyboard=True)
     await bot.send_message(chat_id=message.chat.id,text='Добро пожаловать в магазин!',reply_markup=keyboard)
 
-@dp.message(F.text=='50🪖 за 100🪙')
-async def buy_units(message):
-    cursor.execute('select gold from Users where chat_id=?',(message.chat.id,))
-    info_gold=cursor.fetchall()
-    if info_gold[0][0]<100:
-        await bot.send_message(chat_id=message.chat.id,text='Недостаточно монет')
-        return
-    await bot.send_message(chat_id=message.chat.id,text='Покупка успешно совершена!')
-    cursor.execute('update Users set units_passive_number=units_passive_number+50,gold=gold-100 where chat_id=?',(message.chat.id,))
-    connection.commit()
-
-@dp.message(F.text=='300🪖 за 499🪙')
-async def buy_units2(message):
-    cursor.execute('select gold from Users where chat_id=?',(message.chat.id,))
-    info_gold=cursor.fetchall()
-    if info_gold[0][0]<499:
-        await bot.send_message(chat_id=message.chat.id,text='Недостаточно монет')
-        return
-    await bot.send_message(chat_id=message.chat.id,text='Покупка успешно совершена!')
-    cursor.execute('update Users set units_passive_number=units_passive_number+300,gold=gold-499 where chat_id=?',(message.chat.id,))
-    connection.commit()
-'''
 @dp.message(F.text=='100🪖 за 30 руб.')
-async def buy_units_rub(message):
-    title = '100 воинов'
-    description = "Получите 100 воинов всего за 30 рублей!"
-    payload = '100 units'
-    currency = 'RUB'
-    prices = [LabeledPrice(label='100 воинов', amount=10000)]
-    await message.bot.send_invoice(chat_id=message.chat.id,title=title,description=description,payload=payload,provider_token=YOOKASSA_TOKEN,
-                                   currency=currency,prices=prices,need_name=False,need_phone_number=False)
+async def buy_stars_handler(message: types.Message):
+    # Внимание: для звезд price.amount — это количество целых Звезд (XTR)
+    # 100 звезд = 100
+    price = LabeledPrice(label="Доступ к курсу", amount=100) 
+    
+    await message.answer_invoice(
+        title="Премиум доступ (Stars)",
+        description="Покупка доступа за Telegram Stars",
+        payload="order_id_stars_555",
+        currency="XTR", # ОБЯЗАТЕЛЬНО: это код валюты звезд
+        prices=[price],
+        # provider_token НЕ ПЕРЕДАЕМ (или None)
+    )
 
-
+# 2. Обязательная проверка перед оплатой (Pre-checkout)
 @dp.pre_checkout_query()
-async def pre_checkout_handler(pre_checkout_query):
-    await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
+async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
+    # Telegram проверяет готовность бота принять этот платеж
+    await pre_checkout_query.answer(ok=True)
 
+# 3. Финальная обработка успешной оплаты
 @dp.message(F.successful_payment)
-async def process_payment(message):
-    await message.answer("✅ Оплата прошла! Спасибо!")
-'''
+async def successful_payment(message: types.Message):
+    payment_info = message.successful_payment
+    
+    # Информация о покупке в звездах
+    amount_stars = payment_info.total_amount
+    payload = payment_info.invoice_payload
+    
+    await message.answer(
+        f"✅ Успешно! Вы потратили {amount_stars} звезд.\n"
+        f"ID заказа: {payload}"
+    )
+
 @dp.message(F.text=='⭐РЕЙТИНГ⭐')
 async def buy_units2(message):
     cursor.execute('select * from Users')
