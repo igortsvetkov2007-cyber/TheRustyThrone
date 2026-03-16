@@ -617,13 +617,13 @@ async def buy_stars_handler(message):
 
 # 2. Обязательная проверка перед оплатой (Pre-checkout)
 @dp.pre_checkout_query()
-async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
+async def pre_checkout_query(pre_checkout_query):
     # Telegram проверяет готовность бота принять этот платеж
     await pre_checkout_query.answer(ok=True)
 
 # 3. Финальная обработка успешной оплаты
 @dp.message(F.successful_payment)
-async def successful_payment(message: types.Message):
+async def successful_payment(message):
     payment_info = message.successful_payment
     
     # Информация о покупке в звездах
