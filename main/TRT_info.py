@@ -7,10 +7,7 @@ BOT_TOKEN='7734630132:AAGyqSg76roG5s0DUmeOEsf1S_Zld_5F350'
 
 dir_path=os.path.dirname(os.path.abspath(__file__))
 
-if os.path.exists(os.path.join(os.path.join('../',dir_path),'TRT_database.db'))==False:
-    open(os.path.join(os.path.join('../',dir_path),'TRT_database.db'),'w').close()
-
-connection=sqlite3.connect(os.path.join(os.path.join('../',dir_path),'TRT_database.db'))
+connection=sqlite3.connect(os.path.join(dir_path,'TRT_database.db'))
 cursor=connection.cursor()
 
 cursor.execute('''create table if not exists Users(
@@ -127,6 +124,7 @@ builder_shop=ReplyKeyboardBuilder()
 builder_shop.row(KeyboardButton(text='50🪖 за 100🪙'),KeyboardButton(text='20🏥 за 80🪙'))
 builder_shop.row(KeyboardButton(text='100🪖 за 49 ⭐'),KeyboardButton(text='30🏥 за 59 ⭐'))
 builder_shop.row(KeyboardButton(text='200🪙 за 39 ⭐'),KeyboardButton(text='1000🪙 за 119 ⭐'))
+
 builder_shop.row(KeyboardButton(text='⚔️НАЗАД⚔️'))
 
 builder_reload_bot=ReplyKeyboardBuilder()
