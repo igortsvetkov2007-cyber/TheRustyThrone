@@ -490,6 +490,7 @@ async def buy_units_stars(message):
         title='100🪖',
         description='Совершая данную покупку, вы получаете 100 воинов в свой резерв!',
         currency='XTR',
+        payload='id_12345',
         prices=[LabeledPrice(label='100🪖',amount=49)])
     users_buy_dict[message.chat.id]=['units_passive_number',100,'100🪖']
 
@@ -499,6 +500,7 @@ async def buy_medics_stars(message):
         title='30🏥',
         description='Совершая данную покупку, вы получаете 30 медиков в свой резерв!',
         currency='XTR',
+        payload='id_12345',
         prices=[LabeledPrice(label='30🏥',amount=59)])
     users_buy_dict[message.chat.id]=['medic_passive_number',30,'30🏥']
 
@@ -508,6 +510,7 @@ async def buy_gold_stars(message):
         title='200🪙',
         description='Совершая данную покупку, вы получаете 200 золотых монет!',
         currency='XTR',
+        payload='id_12345',
         prices=[LabeledPrice(label='200🪙',amount=39)])
     users_buy_dict[message.chat.id]=['gold',200,'200🪙']
 
@@ -517,6 +520,7 @@ async def buy_gold_much_stars(message):
         title='1000🪙',
         description='Совершая данную покупку, вы получаете 1000 золотых монет!',
         currency='XTR',
+        payload='id_12345',
         prices=[LabeledPrice(label='1000🪙',amount=119)])
     users_buy_dict[message.chat.id]=['gold',1000,'1000🪙']
 
@@ -633,6 +637,9 @@ async def message_func(message):
             keyboard=builder_reload_bot.as_markup(resize_keyboard=True)
             await bot.send_message(chat_id=info_chat[0][0],text='Ваш профиль был удалён администратором!',reply_markup=keyboard)
             await bot.send_message(chat_id=info_chat[0][0],text='Перезапустите бота, чтобы начать игру заново!')
+            if message.chat.id==info_chat[0][0]:
+                admin_flag=None
+                admin_message_flag=None
             if info_chat[0][0] in list(units_count_dict.keys()):
                 units_count_dict.pop(info_chat[0][0])
             if info_chat[0][0] in list(units_define_dict.keys()):
