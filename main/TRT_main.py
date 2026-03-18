@@ -511,7 +511,7 @@ async def buy_gold_stars(message):
         description='Совершая данную покупку, вы получаете 200 золотых монет!',
         currency='XTR',
         payload='id_12345',
-        prices=[LabeledPrice(label='200🪙',amount=1)])
+        prices=[LabeledPrice(label='200🪙',amount=39)])
     users_buy_dict[message.chat.id]=['gold',200,'200🪙']
 
 @dp.message(F.text=='1000🪙 за 119 ⭐')
