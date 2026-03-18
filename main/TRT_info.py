@@ -9,6 +9,7 @@ dir_path=os.path.dirname(os.path.abspath(__file__))
 
 if os.path.exists(os.path.join(dir_path,'TRT_database.db'))==False:
     open(os.path.join(dir_path,'TRT_database.db'),'w').close()
+    
 
 connection=sqlite3.connect(os.path.join(dir_path,'TRT_database.db'))
 cursor=connection.cursor()
