@@ -511,7 +511,7 @@ async def buy_gold_stars(message):
         description='Совершая данную покупку, вы получаете 200 золотых монет!',
         currency='XTR',
         payload='id_12345',
-        prices=[LabeledPrice(label='200🪙',amount=1)])
+        prices=[LabeledPrice(label='200🪙',amount=39)])
     users_buy_dict[message.chat.id]=['gold',200,'200🪙']
 
 @dp.message(F.text=='1000🪙 за 119 ⭐')
@@ -531,10 +531,10 @@ async def pre_checkout_query(pre_checkout_query):
 @dp.message(F.successful_payment)
 async def successful_payment(message):
     if message.chat.id not in users_buy_dict.keys():
-        print(message.chat.id)
         await bot.send_message(chat_id=message.chat.id,text='Не удалось произвести оплату! Попробуйте ещё раз!')
         return
-    cursor.execute(f'update Users set {users_buy_dict[message.chat.id][0]}={users_buy_dict[message.chat.id][0]}+? where chat_id=?',(users_buy_dict[message.chat.id][1],message.chat.id))
+    cursor.execute(f'update Users set {users_buy_dict[message.chat.id][0]}={users_buy_dict[message.chat.id][0]}+? where chat_id=?',
+                   (users_buy_dict[message.chat.id][1],message.chat.id))
     connection.commit()
     await message.answer(f'Оплата произведена успешно! Вам зачислено {users_buy_dict[message.chat.id][2]}! Удачной игры!')
     users_buy_dict.pop(message.chat.id)
