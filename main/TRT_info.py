@@ -7,10 +7,10 @@ BOT_TOKEN='7734630132:AAGyqSg76roG5s0DUmeOEsf1S_Zld_5F350'
 
 dir_path=os.path.dirname(os.path.abspath(__file__))
 
-if os.path.exists(os.path.join(dir_path,'TRT_database.db'))==False:
-    open(os.path.join(dir_path,'TRT_database.db'),'w').close()
+if os.path.exists(os.path.join(os.path.join('..',dir_path),'TRT_database.db'))==False:
+    open(os.path.join(os.path.join('..',dir_path),'TRT_database.db'),'w').close()
 
-connection=sqlite3.connect(os.path.join(dir_path,'TRT_database.db'))
+connection=sqlite3.connect(os.path.join(os.path.join('..',dir_path),'TRT_database.db'))
 cursor=connection.cursor()
 
 cursor.execute('''create table if not exists Users(
