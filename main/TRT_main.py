@@ -185,7 +185,7 @@ async def upgrades_button_func(message):
     keyboard=builder_upgrades.as_markup(resize_keyboard=True)
     await bot.send_message(chat_id=message.chat.id,text='Улучшать нашу промышленность - очень мудрое решение! Так мы станем более подготовленными и крепкими!',reply_markup=keyboard)
 
-@dp.message(F.text=='ЗОЛОТАЯ ШАХТА')
+@dp.message(F.text=='🪙ЗОЛОТАЯ ШАХТА🪙')
 async def gold_info(message):
     cursor.execute('select gold_level from Users where chat_id=?',(message.chat.id,))
     info_gold_level=cursor.fetchall()[0][0]
@@ -197,7 +197,7 @@ async def gold_info(message):
         keyboard=builder_gold2.as_markup(resize_keyboard=True)
         await bot.send_message(chat_id=message.chat.id,text='Уровень шахты максимальный!',reply_markup=keyboard)
 
-@dp.message(F.text=='ОБОРОНИТЕЛЬНЫЙ РУБЕЖ')
+@dp.message(F.text=='🪖ОБОРОНИТЕЛЬНЫЙ РУБЕЖ🪖')
 async def defense_info(message):
     cursor.execute('select defense_level from Users where chat_id=?',(message.chat.id,))
     info_defense_level=cursor.fetchall()[0][0]
@@ -209,7 +209,7 @@ async def defense_info(message):
         keyboard=builder_defense2.as_markup(resize_keyboard=True)
         await bot.send_message(chat_id=message.chat.id,text='Уровень оборонительного рубежа максимальный!',reply_markup=keyboard)
 
-@dp.message(F.text=='БРОНЕТРАНСПОРТЁР')
+@dp.message(F.text=='🪖БРОНЕТРАНСПОРТЁР🪖')
 async def tank_info(message):
     cursor.execute('select tank_level from Users where chat_id=?',(message.chat.id,))
     info_tank_level=cursor.fetchall()[0][0]
@@ -221,7 +221,7 @@ async def tank_info(message):
         keyboard=builder_tank2.as_markup(resize_keyboard=True)
         await bot.send_message(chat_id=message.chat.id,text='Уровень бронетранспортёра максимальный!',reply_markup=keyboard)
 
-@dp.message(F.text=='МЕДИЦИНСКИЙ АВТОМОБИЛЬ')
+@dp.message(F.text=='🏥МЕДИЦИНСКИЙ АВТОМОБИЛЬ🏥')
 async def heal_auto_info(message):
     cursor.execute('select heal_auto_level from Users where chat_id=?',(message.chat.id,))
     info_heal_level=cursor.fetchall()[0][0]
@@ -233,7 +233,7 @@ async def heal_auto_info(message):
         keyboard=builder_heal_auto2.as_markup(resize_keyboard=True)
         await bot.send_message(chat_id=message.chat.id,text='Уровень медицинского автомобиля максимальный!',reply_markup=keyboard)
 
-@dp.message(F.text=='ВОЕННАЯ ШКОЛА')
+@dp.message(F.text=='🪖ВОЕННАЯ ШКОЛА🪖')
 async def heal_auto_info(message):
     cursor.execute('select war_school_level from Users where chat_id=?',(message.chat.id,))
     info_war_level=cursor.fetchall()[0][0]
@@ -245,7 +245,7 @@ async def heal_auto_info(message):
         keyboard=builder_war_school2.as_markup(resize_keyboard=True)
         await bot.send_message(chat_id=message.chat.id,text='Уровень военной школы максимальный!',reply_markup=keyboard)
 
-@dp.message(F.text=='МЕДИЦИНСКАЯ ШКОЛА')
+@dp.message(F.text=='🏥МЕДИЦИНСКАЯ ШКОЛА🏥')
 async def heal_auto_info(message):
     cursor.execute('select medics_school_level from Users where chat_id=?',(message.chat.id,))
     info_heal_level=cursor.fetchall()[0][0]
@@ -457,13 +457,35 @@ async def attack(message):
     await bot.send_message(chat_id=message.chat.id,text='Выберите колличество воинов из резерва, чтобы пойти в атаку или введите "!", чтобы заполнить бронетранспортёр до максимума.\nЕсли их не будет хватать, недостающая часть прибудет с оборонительных рубежей.',reply_markup=keyboard)
     units_attack_dict[message.chat.id]=0
 
-@dp.message(F.text=='⭐МАГАЗИН⭐')
+@dp.message(F.text=='⭐🪙МАГАЗИН🪙⭐')
 async def shop(message):
     keyboard=builder_shop.as_markup(resize_keyboard=True)
     await bot.send_message(chat_id=message.chat.id,text='Добро пожаловать в магазин!',reply_markup=keyboard)
 
-@dp.message(F.text=='100🪖 за 49 ⭐')
+@dp.message(F.text=='50🪖 за 100🪙')
 async def buy_units(message):
+    cursor.execute('select gold from Users where chat_id=?',(message.chat.id,))
+    info_gold=cursor.fetchall()[0][0]
+    if info_gold<100:
+        await bot.send_message(chat_id=message.chat.id,text='Недостаточно монет!')
+        return
+    cursor.execute('update Users set units_passive_number=units_passive_number+50,gold=gold-100 where chat_id=?',(message.chat.id,))
+    connection.commit()
+    await bot.send_message(chat_id=message.chat.id,text='Поздравляем с покупкой! Ваши воины доставлены в резерв!')
+
+@dp.message(F.text=='20🏥 за 80🪙')
+async def buy_medics(message):
+    cursor.execute('select gold from Users where chat_id=?',(message.chat.id,))
+    info_gold=cursor.fetchall()[0][0]
+    if info_gold<80:
+        await bot.send_message(chat_id=message.chat.id,text='Недостаточно монет!')
+        return
+    cursor.execute('update Users set medics_passive_number=medics_passive_number+20,gold=gold-80 where chat_id=?',(message.chat.id,))
+    connection.commit()
+    await bot.send_message(chat_id=message.chat.id,text='Поздравляем с покупкой! Ваши медики доставлены в резерв!')
+
+@dp.message(F.text=='100🪖 за 49 ⭐')
+async def buy_units_stars(message):
     await message.answer_invoice(
         title='100🪖',
         description='Совершая данную покупку, вы получаете 100 воинов в свой резерв!',
@@ -472,7 +494,7 @@ async def buy_units(message):
     users_buy_dict[message.chat.id]=['units_passive_number',100,'100🪖']
 
 @dp.message(F.text=='30🏥 за 59 ⭐')
-async def buy_medics(message):
+async def buy_medics_stars(message):
     await message.answer_invoice(
         title='30🏥',
         description='Совершая данную покупку, вы получаете 30 медиков в свой резерв!',
@@ -481,7 +503,7 @@ async def buy_medics(message):
     users_buy_dict[message.chat.id]=['medic_passive_number',30,'30🏥']
 
 @dp.message(F.text=='200🪙 за 39 ⭐')
-async def buy_gold2(message):
+async def buy_gold_stars(message):
     await message.answer_invoice(
         title='200🪙',
         description='Совершая данную покупку, вы получаете 200 золотых монет!',
@@ -490,7 +512,7 @@ async def buy_gold2(message):
     users_buy_dict[message.chat.id]=['gold',200,'200🪙']
 
 @dp.message(F.text=='1000🪙 за 119 ⭐')
-async def buy_gold(message):
+async def buy_gold_much_stars(message):
     await message.answer_invoice(
         title='1000🪙',
         description='Совершая данную покупку, вы получаете 1000 золотых монет!',
