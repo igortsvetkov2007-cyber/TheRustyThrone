@@ -581,7 +581,7 @@ async def message_func(message):
     global admin_flag
     global admin_message_flag
     global units_attack_flags
-    if message.From_User.Username=='Igor_Tsvetkov_2007' and message.text.lower()=='admin':
+    if message.from_user.username=='Igor_Tsvetkov_2007' and message.text.lower()=='admin':
         admin_flag=message.chat.id
         keyboard=builder_admin.as_markup(resize_keyboard=True)
         await bot.send_message(chat_id=message.chat.id,text='Вы вошли, как администратор!',reply_markup=keyboard)
