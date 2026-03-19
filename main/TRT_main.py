@@ -560,7 +560,7 @@ async def buy_gold_much_stars(message):
 async def pre_checkout_query(pre_checkout_query):
     info=None
     try:
-        info=users_buy_dict[pre_checout_query.from_user.id][3]
+        info=users_buy_dict[pre_checkout_query.from_user.id][3]
     except:
         pass
     if info!=pre_checkout_query.invoice_payload:
