@@ -567,7 +567,7 @@ async def pre_checkout_query(pre_checkout_query):
         await bot.send_message(chat_id=pre_checkout_query.from_user.id,text='Данная платёжная заявка неактуальна!')
         if pre_checkout_query.from_user.id in users_buy_dict.keys():
             users_buy_dict.pop(pre_checkout_query.from_user.id)
-        await pre_checkout_query.answer(ok=False)
+        await pre_checkout_query.answer(ok=False,error_message='Данная платёжная заявка неактуальна!')
         return
     await pre_checkout_query.answer(ok=True)
 
