@@ -563,10 +563,10 @@ async def pre_checkout_query(pre_checkout_query):
         info=users_buy_dict[pre_checout_query.from_user.id][3]
     except:
         pass
-    if info!=pre_checout_query.invoice_payload:
-        await bot.send_message(chat_id=pre_checout_query.from_user.id,text='Данная платёжная заявка неактуальна!')
-        if pre_checout_query.from_user.id in users_buy_dict.keys():
-            users_buy_dict.pop(pre_checout_query.from_user.id)
+    if info!=pre_checkout_query.invoice_payload:
+        await bot.send_message(chat_id=pre_checkout_query.from_user.id,text='Данная платёжная заявка неактуальна!')
+        if pre_checkout_query.from_user.id in users_buy_dict.keys():
+            users_buy_dict.pop(pre_checkout_query.from_user.id)
         await pre_checkout_query.answer(ok=False)
         return
     await pre_checkout_query.answer(ok=True)
