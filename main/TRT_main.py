@@ -6,6 +6,7 @@ import asyncio
 from threading import Thread
 import time
 import random
+from datetime import datetime
 from TRT_info import *
 
 bot=Bot(BOT_TOKEN)
@@ -513,9 +514,7 @@ async def buy_medics(message):
 
 @dp.message(F.text=='100🪖 за 49 ⭐')
 async def buy_units_stars(message):
-    order_id=''
-    for i in range(random.randint(100,400)):
-        order_id+=str(random.randint(0,10))
+    order_id=message.from_user.username[:10]+datetime.now()
     await message.answer_invoice(
         title='100 воинов',
         description='Совершая данную покупку, вы получаете 100 воинов в свой резерв!',
@@ -526,9 +525,7 @@ async def buy_units_stars(message):
 
 @dp.message(F.text=='30🏥 за 59 ⭐')
 async def buy_medics_stars(message):
-    order_id=''
-    for i in range(random.randint(100,400)):
-        order_id+=str(random.randint(0,10))
+    order_id=message.from_user.username[:10]+datetime.now()
     await message.answer_invoice(
         title='30 медиков',
         description='Совершая данную покупку, вы получаете 30 медиков в свой резерв!',
@@ -539,9 +536,7 @@ async def buy_medics_stars(message):
 
 @dp.message(F.text=='200🪙 за 39 ⭐')
 async def buy_gold_stars(message):
-    order_id=''
-    for i in range(random.randint(100,400)):
-        order_id+=str(random.randint(0,10))
+    order_id=message.from_user.username[:10]+datetime.now()
     await message.answer_invoice(
         title='200 золотых монет',
         description='Совершая данную покупку, вы получаете 200 золотых монет!',
@@ -552,9 +547,7 @@ async def buy_gold_stars(message):
 
 @dp.message(F.text=='1000🪙 за 119 ⭐')
 async def buy_gold_much_stars(message):
-    order_id=''
-    for i in range(random.randint(100,400)):
-        order_id+=str(random.randint(0,10))
+    order_id=message.from_user.username[:10]+datetime.now()
     await message.answer_invoice(
         title='1000 золотых монет',
         description='Совершая данную покупку, вы получаете 1000 золотых монет!',
