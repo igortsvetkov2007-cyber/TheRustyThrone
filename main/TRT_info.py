@@ -6,7 +6,7 @@ import os
 BOT_TOKEN='7734630132:AAGyqSg76roG5s0DUmeOEsf1S_Zld_5F350'
 
 dir_file=os.path.dirname(os.path.abspath(__file__))
-dir_db=open(os.path.join(dir_file,'db_dir_create.txt')).read().strip()
+dir_db=open(os.path.join(dir_file,'db_dir_create.txt'),encoding='utf-8').read().strip()
 
 if os.path.exists(os.path.join(dir_db,'TRT_database.db'))==False:
     open(os.path.join(dir_db,'TRT_database.db'),'w').close()
