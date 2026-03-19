@@ -11,7 +11,7 @@ dir_db=open(os.path.join(dir_file,'db_dir_create.txt'),encoding='utf-8').read().
 #os.path.join(os.path.dirname(dir_file),dir_db)
 #os.path.join("fLNB",'TRT_database.db')
 if os.path.exists(os.path.join(os.path.join(os.path.dirname(dir_file),dir_db),'TRT_database.db'))==False:
-    open(os.path.join(dir_db,'TRT_database.db'),'w').close()
+    open(os.path.join(os.path.join(os.path.dirname(dir_file),dir_db),'TRT_database.db'),'w').close()
 
 connection=sqlite3.connect(os.path.join(dir_db,'TRT_database.db'))
 cursor=connection.cursor()
