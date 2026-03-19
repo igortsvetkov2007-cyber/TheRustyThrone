@@ -8,8 +8,6 @@ BOT_TOKEN='7734630132:AAGyqSg76roG5s0DUmeOEsf1S_Zld_5F350'
 dir_file=os.path.dirname(os.path.abspath(__file__))
 dir_db=open(os.path.join((dir_file,'db_dir_create.txt'),encoding='utf-8').read().strip()
 
-os.path.join()
-
 
 
 if os.path.exists(os.path.join(os.path.join(os.path.dirname(dir_file),dir_db),'TRT_database.db'))==False:
