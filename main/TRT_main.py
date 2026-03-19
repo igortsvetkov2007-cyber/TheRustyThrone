@@ -24,6 +24,25 @@ users_buy_dict={}
 admin_flag=None
 admin_message_flag=None
 
+async def main():
+    Thread(target=units_count).start()
+    await dp.start_polling(bot)
+
+async def account_check(message):
+    cursor.execute('select login from Users where chat_id=?',(message.chat.id,))
+    info_account=cursor.fetchall()    
+    if info_account==[]:
+        await bot.send_message(chat_id=message.chat.id,text='Не смогли обнаружить ваш аккаунт!')
+        await bot.send_message(chat_id=message.chat.id,text='Игра начинается заново!')
+        await bot_start(message)
+    else:
+        if info_account[0][0]==None:
+            cursor.execute('delete from Users where chat_id=?',(message.chat.id,))
+            await bot.send_message(chat_id=message.chat.id,text='Не смогли обнаружить ваш аккаунт!')
+            await bot.send_message(chat_id=message.chat.id,text='Игра начинается заново!')
+            await bot_start(message)
+    connection.commit()
+
 def units_count():
     while True:
         time.sleep(3600)
@@ -35,10 +54,6 @@ def units_count():
             war_school_count_dict[key]+=1
         for key in list(medics_school_count_dict.keys()):
             medics_school_count_dict[key]+=1
-
-async def main():
-    Thread(target=units_count).start()
-    await dp.start_polling(bot)
 
 async def units_collect(message):
     if message.chat.id not in list(units_count_dict.keys()):
@@ -109,7 +124,7 @@ async def ready_button_func(message):
 @dp.message(F.text=='⚔️ВПЕРЁД!⚔️')
 async def begin_game_button_func(message):
     cursor.execute('select login from Users where chat_id=?',(message.chat.id,))
-    info=cursor.fetchall()
+    info=cursor.fetchall()    
     if info[0][0]==None:
         await bot.send_message(chat_id=message.chat.id,text='Как нам называть своего командира?')
     else:
@@ -120,6 +135,7 @@ async def begin_game_button_func(message):
 
 @dp.message(F.text=='⚔️ИНФОРМАЦИЯ⚔️')
 async def army_info_func(message):
+    await bot_start(message)
     if message.chat.id not in list(units_count_dict.keys()):
         units_count_dict[message.chat.id]=0
     if message.chat.id not in list(war_school_count_dict.keys()):
@@ -150,11 +166,13 @@ async def army_info_func(message):
 
 @dp.message(F.text=='⚔️РАСПРЕДЕЛЕНИЕ ВОЙСК⚔️')
 async def army_define_func(message):
+    await bot_start(message)
     keyboard=builder_units_define.as_markup(resize_keyboard=True)
     await bot.send_photo(chat_id=message.chat.id,photo=FSInputFile('images/картинка распределения войск.png'),caption='Войска ждут вашего приказа, командир!',reply_markup=keyboard)
     
 @dp.message(F.text=='⚔️НАЗНАЧИТЬ ВОЙСКА ИЗ РЕЗЕРВА⚔️')
 async def units_active_direct(message):
+    await bot_start(message)
     cursor.execute('select units_active_number,units_defense_restriction,units_passive_number from Users where chat_id=?',(message.chat.id,))
     info=cursor.fetchall()
     await bot.send_message(chat_id=message.chat.id,text=f'Сейчас на оборонительных рубежах находится {info[0][0]} воинов (максимум {info[0][1]}), в резерве {info[0][2]} воинов')
@@ -492,7 +510,7 @@ async def buy_units_stars(message):
         currency='XTR',
         payload='id_12345',
         prices=[LabeledPrice(label='100🪖',amount=49)])
-    users_buy_dict[message.chat.id]=['units_passive_number',100,'100🪖']
+    users_buy_dict[message.chat.id]=['units_passive_number',100,'100🪖',message.message_id]
 
 @dp.message(F.text=='30🏥 за 59 ⭐')
 async def buy_medics_stars(message):
@@ -502,7 +520,7 @@ async def buy_medics_stars(message):
         currency='XTR',
         payload='id_12345',
         prices=[LabeledPrice(label='30🏥',amount=59)])
-    users_buy_dict[message.chat.id]=['medic_passive_number',30,'30🏥']
+    users_buy_dict[message.chat.id]=['medic_passive_number',30,'30🏥',message.message_id]
 
 @dp.message(F.text=='200🪙 за 39 ⭐')
 async def buy_gold_stars(message):
@@ -511,8 +529,8 @@ async def buy_gold_stars(message):
         description='Совершая данную покупку, вы получаете 200 золотых монет!',
         currency='XTR',
         payload='id_12345',
-        prices=[LabeledPrice(label='200🪙',amount=39)])
-    users_buy_dict[message.chat.id]=['gold',200,'200🪙']
+        prices=[LabeledPrice(label='200🪙',amount=1)])
+    users_buy_dict[message.chat.id]=['gold',200,'200🪙',message.message_id]
 
 @dp.message(F.text=='1000🪙 за 119 ⭐')
 async def buy_gold_much_stars(message):
@@ -522,10 +540,14 @@ async def buy_gold_much_stars(message):
         currency='XTR',
         payload='id_12345',
         prices=[LabeledPrice(label='1000🪙',amount=119)])
-    users_buy_dict[message.chat.id]=['gold',1000,'1000🪙']
+    users_buy_dict[message.chat.id]=['gold',1000,'1000🪙',message.message_id]
 
 @dp.pre_checkout_query()
 async def pre_checkout_query(pre_checkout_query):
+    '''if pre_checout_query.from_user.id not in users_buy_dict.keys():
+        await bot.send_message(chat_id=pre_checout_query.from_user.id,text='Данный платёжный счёт неактуален!')
+        return'''
+    await bot.delete_message(chat_id=pre_checout_query.from_user.id,users_buy_dict[pre_checout_query.from_user.id][3])
     await pre_checkout_query.answer(ok=True)
 
 @dp.message(F.successful_payment)
