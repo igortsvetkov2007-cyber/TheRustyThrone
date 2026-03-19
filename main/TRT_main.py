@@ -182,7 +182,7 @@ async def units_active_direct(message):
     await bot_start(message)
     cursor.execute('select units_active_number,units_defense_restriction,units_passive_number from Users where chat_id=?',(message.chat.id,))
     info=cursor.fetchall()
-    await bot.send_message(chat_id=message.chat.id,text=f'Сейчас на оборонительных рубежах находится {info[0][0]} воинов (максимум {info[0][1]}), в резерве {info[0][2]} воинов')
+    await bot.send_message(chat_id=message.chat.id,text=f'Сейчас на оборонительных рубежах находятся {info[0][0]} воинов (максимум {info[0][1]}), в резерве {info[0][2]} воинов')
     await bot.send_message(chat_id=message.chat.id,text='Назначте колличество воинов, которые отправятся из резерва в оборону или введите "!", чтобы заполнить рубежи до максимума.')
     units_define_dict[message.chat.id]='active'
 
@@ -190,7 +190,7 @@ async def units_active_direct(message):
 async def units_passive_direct(message):
     cursor.execute('select units_active_number,units_passive_number from Users where chat_id=?',(message.chat.id,))
     info=cursor.fetchall()
-    await bot.send_message(chat_id=message.chat.id,text=f'Сейчас на оборонительных рубежах находится {info[0][0]} воинов, в резерве {info[0][1]}')
+    await bot.send_message(chat_id=message.chat.id,text=f'Сейчас на оборонительных рубежах находятся {info[0][0]} воинов, в резерве {info[0][1]}')
     await bot.send_message(chat_id=message.chat.id,text='Назначте колличество воинов, которые отправятся с оборонительных рубежей в резерв или введите "!", чтобы переместить в резерв всех воинов')
     units_define_dict[message.chat.id]='passive'
 
@@ -513,54 +513,73 @@ async def buy_medics(message):
 
 @dp.message(F.text=='100🪖 за 49 ⭐')
 async def buy_units_stars(message):
+    order_id=''
+    for i in range(random.randint(100,400)):
+        order_id+=str(random.randint(0,10))
     await message.answer_invoice(
         title='100 воинов',
         description='Совершая данную покупку, вы получаете 100 воинов в свой резерв!',
         currency='XTR',
-        payload='id_12345',
+        payload=order_id,
         prices=[LabeledPrice(label='100🪖',amount=49)])
-    users_buy_dict[message.chat.id]=['units_passive_number',100,'100🪖',message.message_id]
+    users_buy_dict[message.chat.id]=['units_passive_number',100,'100🪖',order_id]
 
 @dp.message(F.text=='30🏥 за 59 ⭐')
 async def buy_medics_stars(message):
+    order_id=''
+    for i in range(random.randint(100,400)):
+        order_id+=str(random.randint(0,10))
     await message.answer_invoice(
         title='30 медиков',
         description='Совершая данную покупку, вы получаете 30 медиков в свой резерв!',
         currency='XTR',
-        payload='id_12345',
+        payload=order_id,
         prices=[LabeledPrice(label='30🏥',amount=59)])
-    users_buy_dict[message.chat.id]=['medic_passive_number',30,'30🏥',message.message_id]
+    users_buy_dict[message.chat.id]=['medic_passive_number',30,'30🏥',order_id]
 
 @dp.message(F.text=='200🪙 за 39 ⭐')
 async def buy_gold_stars(message):
+    order_id=''
+    for i in range(random.randint(100,400)):
+        order_id+=str(random.randint(0,10))
     await message.answer_invoice(
         title='200 золотых монет',
         description='Совершая данную покупку, вы получаете 200 золотых монет!',
         currency='XTR',
-        payload='id_12345',
+        payload=order_id,
         prices=[LabeledPrice(label='200🪙',amount=1)])
-    users_buy_dict[message.chat.id]=['gold',200,'200🪙',message.message_id]
+    users_buy_dict[message.chat.id]=['gold',200,'200🪙',order_id]
 
 @dp.message(F.text=='1000🪙 за 119 ⭐')
 async def buy_gold_much_stars(message):
+    order_id=''
+    for i in range(random.randint(100,400)):
+        order_id+=str(random.randint(0,10))
     await message.answer_invoice(
         title='1000 золотых монет',
         description='Совершая данную покупку, вы получаете 1000 золотых монет!',
         currency='XTR',
-        payload='id_12345',
+        payload=order_id,
         prices=[LabeledPrice(label='1000🪙',amount=119)])
-    users_buy_dict[message.chat.id]=['gold',1000,'1000🪙',message.message_id]
+    users_buy_dict[message.chat.id]=['gold',1000,'1000🪙',order_id]
 
 @dp.pre_checkout_query()
 async def pre_checkout_query(pre_checkout_query):
-    await bot.delete_message(pre_checout_query.from_user.id,users_buy_dict[pre_checkout_query.from_user.id][3])
+    info=None
+    try:
+        info=users_buy_dict[pre_checout_query.from_user.id][3]
+    except:
+        pass
+    if info!=pre_checout_query.invoice_payload:
+        await bot.send_message(chat_id=pre_checout_query.from_user.id,text='Данная платёжная заявка неактуальна!')
+        if pre_checout_query.from_user.id in users_buy_dict.keys():
+            users_buy_dict.pop(pre_checout_query.from_user.id)
+        await pre_checkout_query.answer(ok=False)
+        return
     await pre_checkout_query.answer(ok=True)
 
 @dp.message(F.successful_payment)
 async def successful_payment(message):
-    if message.chat.id not in users_buy_dict.keys():
-        await bot.send_message(chat_id=message.chat.id,text='Не удалось произвести оплату! Попробуйте ещё раз!')
-        return
     cursor.execute(f'update Users set {users_buy_dict[message.chat.id][0]}={users_buy_dict[message.chat.id][0]}+? where chat_id=?',
                    (users_buy_dict[message.chat.id][1],message.chat.id))
     connection.commit()
