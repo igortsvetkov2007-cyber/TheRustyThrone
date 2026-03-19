@@ -104,6 +104,14 @@ async def bot_start(message):
 
 @dp.message(F.text=='ПЕРЕЗАПУСТИТЬ БОТА')
 async def bot_reload(message):
+    if message.chat.id in units_count_dict.keys():
+        units_count_dict.pop(message.chat.id)
+    if message.chat.id in gold_count_dict.keys():
+        gold_count_dict.pop(message.chat.id)
+    if message.chat.id in war_school_count_dict.keys():
+        war_school_count_dict.pop(message.chat.id)
+    if message.chat.id in medics_school_count_dict.keys():
+        medics_school_count_dict.pop(message.chat.id)
     await bot_start(message)
 
 @dp.message(F.text=='⚔ДА! Я ГОТОВ!⚔')
@@ -135,7 +143,6 @@ async def begin_game_button_func(message):
 
 @dp.message(F.text=='⚔️ИНФОРМАЦИЯ⚔️')
 async def army_info_func(message):
-    await bot_start(message)
     if message.chat.id not in list(units_count_dict.keys()):
         units_count_dict[message.chat.id]=0
     if message.chat.id not in list(war_school_count_dict.keys()):
@@ -200,11 +207,13 @@ async def back(message):
 
 @dp.message(F.text=='🪙УЛУЧШЕНИЯ🪙')
 async def upgrades_button_func(message):
+    await account_check(message)
     keyboard=builder_upgrades.as_markup(resize_keyboard=True)
     await bot.send_message(chat_id=message.chat.id,text='Улучшать нашу промышленность - очень мудрое решение! Так мы станем более подготовленными и крепкими!',reply_markup=keyboard)
 
 @dp.message(F.text=='🪙ЗОЛОТАЯ ШАХТА🪙')
 async def gold_info(message):
+    await account_check(message)
     cursor.execute('select gold_level from Users where chat_id=?',(message.chat.id,))
     info_gold_level=cursor.fetchall()[0][0]
     await bot.send_message(chat_id=message.chat.id,text=f'Сейчас в вашем распоряжении золотая шахта {info_gold_level} уровня, приносящая {gold_levels[info_gold_level]} монет в час')
@@ -544,10 +553,7 @@ async def buy_gold_much_stars(message):
 
 @dp.pre_checkout_query()
 async def pre_checkout_query(pre_checkout_query):
-    '''if pre_checout_query.from_user.id not in users_buy_dict.keys():
-        await bot.send_message(chat_id=pre_checout_query.from_user.id,text='Данный платёжный счёт неактуален!')
-        return'''
-    await bot.delete_message(chat_id=pre_checout_query.from_user.id,users_buy_dict[pre_checout_query.from_user.id][3])
+    await bot.delete_message(pre_checout_query.from_user.id,users_buy_dict[pre_checkout_query.from_user.id][3])
     await pre_checkout_query.answer(ok=True)
 
 @dp.message(F.successful_payment)
