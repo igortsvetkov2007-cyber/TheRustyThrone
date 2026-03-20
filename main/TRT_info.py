@@ -129,8 +129,8 @@ builder_units_define.row(KeyboardButton(text='⚔️НАЗАД⚔️'))
 
 builder_shop=ReplyKeyboardBuilder()
 builder_shop.row(KeyboardButton(text='50🪖 за 100🪙'),KeyboardButton(text='20🏥 за 80🪙'))
-builder_shop.row(KeyboardButton(text='100🪖 за 49 ⭐'),KeyboardButton(text='30🏥 за 59 ⭐'))
-builder_shop.row(KeyboardButton(text='200🪙 за 39 ⭐'),KeyboardButton(text='1000🪙 за 119 ⭐'))
+builder_shop.row(KeyboardButton(text='100🪖 за 39 ⭐'),KeyboardButton(text='30🏥 за 49 ⭐'))
+builder_shop.row(KeyboardButton(text='200🪙 за 29 ⭐'),KeyboardButton(text='1000🪙 за 99 ⭐'))
 
 builder_shop.row(KeyboardButton(text='⚔️НАЗАД⚔️'))
 
