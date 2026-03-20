@@ -512,7 +512,7 @@ async def buy_medics(message):
     connection.commit()
     await bot.send_message(chat_id=message.chat.id,text='Поздравляем с покупкой! Ваши медики доставлены в резерв!')
 
-@dp.message(F.text=='100🪖 за 49 ⭐')
+@dp.message(F.text=='100🪖 за 39 ⭐')
 async def buy_units_stars(message):
     order_id=message.from_user.username[:10]+datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     await message.answer_invoice(
@@ -520,10 +520,10 @@ async def buy_units_stars(message):
         description='Совершая данную покупку, вы получаете 100 воинов в свой резерв!',
         currency='XTR',
         payload=order_id,
-        prices=[LabeledPrice(label='100🪖',amount=49)])
+        prices=[LabeledPrice(label='100🪖',amount=39)])
     users_buy_dict[message.chat.id]=['units_passive_number',100,'100🪖',order_id]
 
-@dp.message(F.text=='30🏥 за 59 ⭐')
+@dp.message(F.text=='30🏥 за 49 ⭐')
 async def buy_medics_stars(message):
     order_id=message.from_user.username[:10]+datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     await message.answer_invoice(
@@ -531,10 +531,10 @@ async def buy_medics_stars(message):
         description='Совершая данную покупку, вы получаете 30 медиков в свой резерв!',
         currency='XTR',
         payload=order_id,
-        prices=[LabeledPrice(label='30🏥',amount=59)])
+        prices=[LabeledPrice(label='30🏥',amount=49)])
     users_buy_dict[message.chat.id]=['medic_passive_number',30,'30🏥',order_id]
 
-@dp.message(F.text=='200🪙 за 39 ⭐')
+@dp.message(F.text=='200🪙 за 29 ⭐')
 async def buy_gold_stars(message):
     order_id=message.from_user.username[:10]+datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     await message.answer_invoice(
@@ -542,10 +542,10 @@ async def buy_gold_stars(message):
         description='Совершая данную покупку, вы получаете 200 золотых монет!',
         currency='XTR',
         payload=order_id,
-        prices=[LabeledPrice(label='200🪙',amount=1)])
+        prices=[LabeledPrice(label='200🪙',amount=29)])
     users_buy_dict[message.chat.id]=['gold',200,'200🪙',order_id]
 
-@dp.message(F.text=='1000🪙 за 119 ⭐')
+@dp.message(F.text=='1000🪙 за 99 ⭐')
 async def buy_gold_much_stars(message):
     order_id=message.from_user.username[:10]+datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     await message.answer_invoice(
@@ -553,7 +553,7 @@ async def buy_gold_much_stars(message):
         description='Совершая данную покупку, вы получаете 1000 золотых монет!',
         currency='XTR',
         payload=order_id,
-        prices=[LabeledPrice(label='1000🪙',amount=119)])
+        prices=[LabeledPrice(label='1000🪙',amount=99)])
     users_buy_dict[message.chat.id]=['gold',1000,'1000🪙',order_id]
 
 @dp.pre_checkout_query()
